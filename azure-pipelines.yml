@@ -25,6 +25,6 @@ steps:
     kubernetesServiceEndpoint: 'pacman-kasten-io-1679333939577'
     namespace: 'pacman'
     command: 'get'
-    arguments: 'secrets'
+    arguments: 'serviceaccount'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
