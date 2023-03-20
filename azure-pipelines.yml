@@ -11,13 +11,11 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script test a change'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: ContainerBuild@0
+  inputs:
+    dockerRegistryServiceConnection: 'mcourcy-dockerhub'
+    repository: 'michaelcourcy/pacman'
+    Dockerfile: 'Dockerfile'
 
 - task: Kubernetes@1
   inputs:
