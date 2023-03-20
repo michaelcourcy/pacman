@@ -1,8 +1,7 @@
-# Starter pipeline
+# Pacman pipeline
 
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Build and push the pacman image 
+# deploy with helm on your kubernetes cluster 
 
 trigger:
 - main
@@ -24,6 +23,17 @@ steps:
     installKubectl: true
     kubectlVersion: '1.26.1'
     checkLatestKubectl: false
+
+- task: HelmDeploy@0
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceConnection: 'pacman-kasten-io-1679333939577'
+    namespace: 'pacman'
+    command: 'upgrade'
+    chartType: 'FilePath'
+    chartPath: 'charts/pacman'
+    releaseName: 'pacman'
+    overrideValues: 'ingress.create=true,ingress.class=ngninx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=7'
 
 - task: Kubernetes@1
   inputs:
