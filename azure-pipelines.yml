@@ -11,6 +11,7 @@ pool:
 
 steps:
 - task: ContainerBuild@0
+  displayName: "build pacman image"
   inputs:
     dockerRegistryServiceConnection: 'mcourcy-dockerhub'
     repository: 'michaelcourcy/pacman'
@@ -19,6 +20,7 @@ steps:
 
 
 - task: HelmDeploy@0
+  displayName: deploy pacman
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceConnection: 'pacman-kasten-io-1679333939577'
@@ -29,12 +31,3 @@ steps:
     releaseName: 'pacman'
     overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=$(Build.BuildId)'
 
-- task: Kubernetes@1
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'pacman-kasten-io-1679333939577'
-    namespace: 'pacman'
-    command: 'get'
-    arguments: 'serviceaccount'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
