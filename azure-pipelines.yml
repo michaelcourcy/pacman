@@ -17,12 +17,6 @@ steps:
     Dockerfile: 'Dockerfile'
     # tag: $(Build.BuildId)
 
-- task: HelmInstaller@0
-  inputs:
-    helmVersion: '3.11.0'
-    installKubectl: true
-    kubectlVersion: '1.26.1'
-    checkLatestKubectl: false
 
 - task: HelmDeploy@0
   inputs:
@@ -33,7 +27,7 @@ steps:
     chartType: 'FilePath'
     chartPath: 'charts/pacman'
     releaseName: 'pacman'
-    overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=7'
+    overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=$(Build.BuildId)'
 
 - task: Kubernetes@1
   inputs:
