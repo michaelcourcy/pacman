@@ -33,7 +33,7 @@ steps:
     chartType: 'FilePath'
     chartPath: 'charts/pacman'
     releaseName: 'pacman'
-    overrideValues: 'ingress.create=true,ingress.class=ngninx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=7'
+    overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=7'
 
 - task: Kubernetes@1
   inputs:
