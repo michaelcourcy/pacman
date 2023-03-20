@@ -16,6 +16,14 @@ steps:
     dockerRegistryServiceConnection: 'mcourcy-dockerhub'
     repository: 'michaelcourcy/pacman'
     Dockerfile: 'Dockerfile'
+    # tag: $(Build.BuildId)
+
+- task: HelmInstaller@0
+  inputs:
+    helmVersion: '3.11.0'
+    installKubectl: true
+    kubectlVersion: '1.26.1'
+    checkLatestKubectl: false
 
 - task: Kubernetes@1
   inputs:
