@@ -18,41 +18,19 @@ steps:
     Dockerfile: 'Dockerfile'
     # tag: $(Build.BuildId)
 
-- task: KubectlInstaller@0
-  displayName: "install kubectl"
-  inputs:
-    kubectlVersion: '1.26.1'
 
-- task: Kubernetes@1
-  displayName: "connect to pacman ns"
+- task: KubernetesManifest@0
   inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'pacman-kasten-io-1679333939577'
+    action: 'deploy'
+    kubernetesServiceConnection: 'pacman-kasten-io-1679333939577'
     namespace: 'pacman'
-    command: 'get'
-    arguments: 'service'
-    versionSpec: '1.26.1'
-
-- task: Bash@3
-  displayName: "backup pacman"
-  inputs:
-    targetType: 'inline'
-    script: |
-      cat <<EOF | kubectl create -f - 
-              kind: BackupAction
-              apiVersion: actions.kio.kasten.io/v1alpha1
-              metadata:
-                generateName: pacman-backupaction-
-                namespace: pacman          
-              spec:
-                subject:
-                  name: pacman
-                  namespace: pacman
-            EOF
+    manifests: 'azuredevops/backupaction.yaml'
 
 
 # TODO wait for backupaction to complete instead of sleeping
 # see an example in https://github.com/michaelcourcy/kasten-tekton/blob/main/tasks/backupaction-task.yml
+# probably need a dedicated Kasten task for backup action so 
+# for the moment the simplest approach is just to wait 5 minutes 
 - task: Bash@3
   displayName: "Wait for backup to complete"
   inputs:
