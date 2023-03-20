@@ -1,0 +1,8 @@
+kind: BackupAction
+apiVersion: actions.kio.kasten.io/v1alpha1
+metadata:
+  generateName: pacman-backupaction-          
+spec:
+  subject:
+    name: pacman
+    namespace: pacman
