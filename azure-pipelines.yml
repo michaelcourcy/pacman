@@ -22,6 +22,7 @@ steps:
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'pacman-kasten-io-1679333939577'
+    namespace: 'pacman'
     command: 'create'
     useConfigurationFile: true
     configuration: 'azuredevops/backupaction.yaml'
