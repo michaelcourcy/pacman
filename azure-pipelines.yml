@@ -19,6 +19,7 @@ steps:
     # tag: $(Build.BuildId)
 
 - task: Kubernetes@1
+  displayName: "Backup before deploy"
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'pacman-kasten-io-1679333939577'
