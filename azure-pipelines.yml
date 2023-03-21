@@ -32,12 +32,12 @@ steps:
 # TODO wait for backupaction to complete instead of sleeping
 # see an example in https://github.com/michaelcourcy/kasten-tekton/blob/main/tasks/backupaction-task.yml
 # probably need a dedicated Kasten task for backup action so 
-# for the moment the simplest approach is just to wait 5 minutes 
+# for the moment the simplest approach is just to wait 2 minutes 
 - task: Bash@3
   displayName: "Wait for backup to complete"
   inputs:
     targetType: 'inline'
-    script: 'sleep 300'
+    script: 'sleep 120'
 
 
 - task: HelmDeploy@0
