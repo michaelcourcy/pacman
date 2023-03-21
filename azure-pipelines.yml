@@ -24,8 +24,9 @@ steps:
     action: 'deploy'
     kubernetesServiceConnection: 'pacman-kasten-io-1679333939577'
     namespace: 'pacman'
-    manifests: |
-      azuredevops/backupaction.yaml
+    strategy: 'canary'
+    percentage: '0'
+    manifests: 'azuredevops/backupaction.yaml'
 
 
 # TODO wait for backupaction to complete instead of sleeping
