@@ -27,8 +27,6 @@ steps:
     command: 'create'
     useConfigurationFile: true
     configuration: 'azuredevops/backupaction.yaml'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
 
 
 # TODO wait for backupaction to complete instead of sleeping
