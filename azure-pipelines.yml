@@ -46,7 +46,7 @@ steps:
   displayName: "Wait for backup to complete"
   inputs:
     targetType: 'inline'
-    script: 'sleep 120; kubectl get secret -n pacman -o yaml'
+    script: 'sleep 120'
 
 
 - task: HelmDeploy@0
