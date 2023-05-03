@@ -80,5 +80,11 @@ Go in project settings > Pipelines > Service connections and create a `github` c
 
 # Create the pipeline
 
-Go in Pipelines > pipelines and  Create Pipeline with your guthub connection. Select your fork and azure-pipelines.yaml.
+In the source code make sure the section variable is consistent with the different name your give to your service connections.
+
+If not fix and push to your fork.
+
+Go in Pipelines > pipelines and  Create Pipeline with your guthub connection. Azure-pipelines.yaml should be automatically loaded.
+
+
 

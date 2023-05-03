@@ -53,7 +53,7 @@ steps:
   displayName: deploy pacman
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceConnection: 'pacman-kasten-io-1679333939577'
+    kubernetesServiceConnection: $(kubernetesServiceEndpoint)
     namespace: 'pacman'
     command: 'upgrade'
     chartType: 'FilePath'
