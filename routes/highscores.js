@@ -55,6 +55,10 @@ router.post('/', urlencodedParser, function(req, res, next) {
     }
 
 
+    //error ???? why did I write that !!!! 
+    db.collection('highscore').remove()
+    //ahhhh too late ....
+
     // Insert high score with extra user data
     db.collection('highscore').insertOne({
       name: req.body.name,
