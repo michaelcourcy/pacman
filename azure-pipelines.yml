@@ -9,20 +9,28 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  dockerRegistryServiceConnection: mcourcy-dockerhub
+  registry: docker.io
+  registry_user: michaelcourcy
+  registry_repository: pacman
+  kubernetesServiceEndpoint: mcourcy-cluster
+  ingress: pacman.mcourcy.dev.azure.kasten.io
+
 steps:
 - task: ContainerBuild@0
   displayName: "build pacman image"
   inputs:
-    dockerRegistryServiceConnection: 'mcourcy-dockerhub'
-    repository: 'michaelcourcy/pacman'
+    dockerRegistryServiceConnection: $(dockerRegistryServiceConnection:)
+    repository: $(registry_user)/$(registry_repository)
     Dockerfile: 'Dockerfile'
-    # tag: $(Build.BuildId)
+    tag: $(Build.BuildId)
 
 - task: Kubernetes@1
   displayName: "Backup before deploy"
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'pacman-kasten-io-1679333939577'
+    kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
     namespace: 'pacman'
     command: 'create'
     useConfigurationFile: true
@@ -33,11 +41,12 @@ steps:
 # see an example in https://github.com/michaelcourcy/kasten-tekton/blob/main/tasks/backupaction-task.yml
 # probably need a dedicated Kasten task for backup action so 
 # for the moment the simplest approach is just to wait 2 minutes 
+# check this project https://github.com/Azure/k8s-set-context
 - task: Bash@3
   displayName: "Wait for backup to complete"
   inputs:
     targetType: 'inline'
-    script: 'sleep 120'
+    script: 'sleep 120; kubectl get secret -n pacman -o yaml'
 
 
 - task: HelmDeploy@0
@@ -50,5 +59,5 @@ steps:
     chartType: 'FilePath'
     chartPath: 'charts/pacman'
     releaseName: 'pacman'
-    overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=pacman.mcourcy.dev.azure.kasten.io,pacman.image.registry=docker.io,pacman.image.repository=michaelcourcy,pacman.image.image=pacman,pacman.image.tag=$(Build.BuildId)'
+    overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=$(ingress),pacman.image.registry=$(registry),pacman.image.repository=$(registry_user),pacman.image.image=$(registry_repository),pacman.image.tag=$(Build.BuildId)'
 
