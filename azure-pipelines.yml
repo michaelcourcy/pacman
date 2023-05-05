@@ -53,14 +53,11 @@ steps:
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'mcourcy-cluster'
-    namespace: 'pacman'    
+    namespace: 'pacman'
     command: 
     useConfigurationFile: true
     configurationType: 'inline'
-    inline: |
-      kubectl get secret -o yaml
-      NUM_BACK=$(kubectl get backupaction|wc -l)
-      echo " num backup is $NUM_BACK"
+    inline: 'kubectl get secret -o yaml'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
 
