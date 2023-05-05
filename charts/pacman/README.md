@@ -31,7 +31,9 @@ helm install pacman pacman/pacman -n pacman --create-namespace \
 Route (Requires an OpenShift installation. Adapt the class/host to your environment):
 ```
 helm install pacman pacman/pacman -n pacman --create-namespace \
-    --set route.create=true
+    --set route.create=true \
+    --set mongodb.containerSecurityContext.enabled=false \
+    --set mongodb.podSecurityContext.enabled=false
 ```
 
 ## Other installation options:
