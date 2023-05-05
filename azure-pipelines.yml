@@ -49,11 +49,11 @@ steps:
 #    script: 'sleep 120'
 
 - task: Kubernetes@1
+  displayName: "test inline"
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'mcourcy-cluster'
-    namespace: 'pacman'
-    displayName: "test inline"
+    namespace: 'pacman'    
     command: 
     useConfigurationFile: true
     configurationType: 'inline'
