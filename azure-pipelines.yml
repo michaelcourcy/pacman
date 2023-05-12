@@ -47,8 +47,9 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-            ls -al ~
-            echo "kubeconfig $KUBECONFIG"
+            ls -al ~/.kube
+            cat  ~/.kube/config
+            export KUBECONFIG=~/.kube/config
             kubectl config get-contexts
 
 - task: HelmDeploy@0
