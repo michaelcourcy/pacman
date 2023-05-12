@@ -44,7 +44,7 @@ steps:
 # check this project https://github.com/Azure/k8s-set-context
 - task: Bash@3
   displayName: "Wait for backup to complete"
- inputs:
+  inputs:
     targetType: 'inline'
     script: |
             ls -al ~
