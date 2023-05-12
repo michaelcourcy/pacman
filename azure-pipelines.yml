@@ -47,6 +47,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+            ls -al
             ls -al ~/.kube
             cat  ~/.kube/config
             export KUBECONFIG=~/.kube/config
