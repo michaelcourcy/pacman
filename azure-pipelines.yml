@@ -42,25 +42,14 @@ steps:
 # probably need a dedicated Kasten task for backup action so 
 # for the moment the simplest approach is just to wait 2 minutes 
 # check this project https://github.com/Azure/k8s-set-context
-#- task: Bash@3
-#  displayName: "Wait for backup to complete"
-# inputs:
-#    targetType: 'inline'
-#    script: 'sleep 120'
-
-- task: Kubernetes@1
-  displayName: "test inline"
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'mcourcy-cluster'
-    namespace: 'pacman'
-    command: 
-    useConfigurationFile: true
-    configurationType: 'inline'
-    inline: 'kubectl get secret -o yaml'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-
+- task: Bash@3
+  displayName: "Wait for backup to complete"
+ inputs:
+    targetType: 'inline'
+    script: |
+            ls -al ~
+            echo "kubeconfig $KUBECONFIG"
+            kubectl config get-contexts
 
 - task: HelmDeploy@0
   displayName: deploy pacman
