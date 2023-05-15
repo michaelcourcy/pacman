@@ -26,11 +26,6 @@ steps:
     Dockerfile: 'Dockerfile'
     tag: $(Build.BuildId)
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'helm version'
-
 - task: HelmDeploy@0
   displayName: create backup job
   inputs:
