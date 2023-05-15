@@ -30,8 +30,8 @@ metadata:
   namespace: pacman
 rules:
 - apiGroups: ["*","apps","extensions"]
-  resources: ["*"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  resources: ["*"]  
+  verbs: ["*"]
 EOF
 kubectl apply -f -<<EOF
 apiVersion: rbac.authorization.k8s.io/v1
@@ -59,6 +59,16 @@ metadata:
       kubernetes.io/service-account.name: "devops"
 EOF
 ```
+
+```
+k create clusterrole view-on-kasten-io-basic --verb=get,list,watch --resource=clusterroles --resource-name=kasten-io-basic
+k create clusterrolebinding devops-kasten-io-basic --clusterrole=view-on-kasten-io-basic --serviceaccount=pacman:devops
+
+kubectl create clusterrole kasten-io-basic --as system:serviceaccount:pacman:devops
+
+kubectl create rolebinding kasten-io-basic-pac-backupaction --namespace=pacman --clusterrole=kasten-io-basic  --serviceaccount=pacman:pac-backupaction  --as system:serviceaccount:pacman:devops
+```
+
 
 
 Go in project settings > Pipelines > Service connections and create a `Kubernetes` connection. fill up the form with this information 
