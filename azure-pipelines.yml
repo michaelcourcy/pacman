@@ -26,8 +26,6 @@ steps:
     Dockerfile: 'Dockerfile'
     tag: $(Build.BuildId)
 
-
-
 - task: HelmDeploy@0
   displayName: create backup job
   inputs:
@@ -40,18 +38,15 @@ steps:
     releaseName: 'pacback'
     overrideValues: 'kastenRelease=kasten-io'
     arguments: --wait-for-jobs --timeout=120s
-
  
-  - task: HelmDeploy@0
-    displayName: remove backup job
-    inputs:
-      connectionType: 'Kubernetes Service Connection'
-      kubernetesServiceConnection: $(kubernetesServiceEndpoint)
-      namespace: 'pacman'
-      command: 'delete'    
-      releaseName: 'pacback'      
-
-
+- task: HelmDeploy@0
+  displayName: remove backup job
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceConnection: $(kubernetesServiceEndpoint)
+    namespace: 'pacman'
+    command: 'delete'    
+    releaseName: 'pacback'      
 
 - task: HelmDeploy@0
   displayName: deploy pacman
