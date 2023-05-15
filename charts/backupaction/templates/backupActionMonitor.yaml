@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "backupaction.fullname" . }}-monitor"
+  labels:
+    {{- include "backupaction.labels" . | nindent 4 }}
+  annotations:    
+    "helm.sh/hook": post-install 
+spec:
+  backoffLimit: 4  
+  template:
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "backupaction.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: Never
+      containers:
+      - name: wait-for-complete
+        securityContext:
+              {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command:
+          - sh
+          - -x 
+          - -o
+          - errexit
+          - -o
+          - pipefail
+          - -c
+          - | 
+            NAMESPACE={{ .Release.Namespace }}
+            cat <<EOF | kubectl create -o jsonpath='{.metadata.name}' -f - | tee /tmp/backupaction
+            kind: BackupAction
+            apiVersion: actions.kio.kasten.io/v1alpha1
+            metadata:
+              generateName: {{ include "backupaction.name" . }}-
+              namespace: $NAMESPACE          
+            spec:
+              subject:
+                name: $NAMESPACE
+                namespace: $NAMESPACE
+            EOF
+            backupaction=$(cat /tmp/backupaction)         
+            while true
+            do 
+              state=$(kubectl -n $NAMESPACE get -o jsonpath='{.status.state}' backupaction/$backupaction)
+              if [[ "$state" == "Failed" ]]
+              then 
+                echo "Error Backupaction $backupaction has failed"
+                kubectl -n $NAMESPACE get -o jsonpath='{.status.error}' backupaction/$backupaction
+                exit 1
+              fi
+              if [[ "$state" == "Complete" ]]
+              then 
+                echo "Backupaction $backupaction has succeeded"
+                exit 0
+              fi
+              echo "Backupaction $backupaction in state $state, sleep 5 seconds"
+              sleep 5 
+            done

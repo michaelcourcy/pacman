@@ -26,32 +26,32 @@ steps:
     Dockerfile: 'Dockerfile'
     tag: $(Build.BuildId)
 
-- task: Kubernetes@1
-  displayName: "Backup before deploy"
+
+
+- task: HelmDeploy@0
+  displayName: create backup job
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+    kubernetesServiceConnection: $(kubernetesServiceEndpoint)
     namespace: 'pacman'
-    command: 'create'
-    useConfigurationFile: true
-    configuration: 'azuredevops/backupaction.yaml'
+    command: 'upgrade'
+    chartType: 'FilePath'
+    chartPath: 'charts/backupaction'
+    releaseName: 'pacback'
+    overrideValues: 'kastenRelease=kasten-io'
+    arguments: --wait-for-jobs --timeout=120s
+
+ 
+  - task: HelmDeploy@0
+    displayName: remove backup job
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceConnection: $(kubernetesServiceEndpoint)
+      namespace: 'pacman'
+      command: 'delete'    
+      releaseName: 'pacback'      
 
 
-# TODO wait for backupaction to complete instead of sleeping
-# see an example in https://github.com/michaelcourcy/kasten-tekton/blob/main/tasks/backupaction-task.yml
-# probably need a dedicated Kasten task for backup action so 
-# for the moment the simplest approach is just to wait 2 minutes 
-# check this project https://github.com/Azure/k8s-set-context
-- task: Bash@3
-  displayName: "Wait for backup to complete"
-  inputs:
-    targetType: 'inline'
-    script: |
-            ls -al
-            ls -al ~/.kube
-            cat  ~/.kube/config
-            export KUBECONFIG=~/.kube/config
-            kubectl config get-contexts
 
 - task: HelmDeploy@0
   displayName: deploy pacman
