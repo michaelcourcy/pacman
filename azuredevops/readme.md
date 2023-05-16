@@ -29,7 +29,7 @@ metadata:
   name: role-for-devops
   namespace: pacman
 rules:
-- apiGroups: ["*","apps","extensions"]
+- apiGroups: ["*"]
   resources: ["*"]  
   verbs: ["*"]
 EOF
@@ -60,16 +60,6 @@ metadata:
 EOF
 ```
 
-```
-k create clusterrole view-on-kasten-io-basic --verb=get,list,watch --resource=clusterroles --resource-name=kasten-io-basic
-k create clusterrolebinding devops-kasten-io-basic --clusterrole=view-on-kasten-io-basic --serviceaccount=pacman:devops
-
-kubectl create clusterrole kasten-io-basic --as system:serviceaccount:pacman:devops
-
-kubectl create rolebinding kasten-io-basic-pac-backupaction --namespace=pacman --clusterrole=kasten-io-basic  --serviceaccount=pacman:pac-backupaction  --as system:serviceaccount:pacman:devops
-```
-
-
 
 Go in project settings > Pipelines > Service connections and create a `Kubernetes` connection. fill up the form with this information 
 - Service connection name : you choose
@@ -78,7 +68,6 @@ Go in project settings > Pipelines > Service connections and create a `Kubernete
 - secret : `kubectl get secret -n pacman sa-secret -o json`
 - accept untrusted certificate : true
 
-Note the name of the 
 
 ## Create a registry connection for pushing your image 
 
@@ -90,9 +79,7 @@ Go in project settings > Pipelines > Service connections and create a `github` c
 
 # Create the pipeline
 
-In the source code make sure the section variable is consistent with the different name your give to your service connections.
-
-If not fix and push to your fork.
+In the source code make sure the section variable is consistent with the different name your give to your service connections. If not fix and push to your fork.
 
 Go in Pipelines > pipelines and  Create Pipeline with your guthub connection. Azure-pipelines.yaml should be automatically loaded.
 
