@@ -39,24 +39,14 @@ steps:
     overrideValues: 'kastenRelease=kasten-io'
     arguments: --wait-for-jobs --timeout=120s
 
-- task: HelmDeploy@0
+- task: Kubernetes@1
   displayName: remove backup job
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceConnection: $(kubernetesServiceEndpoint)
+    kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
     namespace: 'pacman'
     command: 'delete'
-    chartType: 'Name'
-    releaseName: 'pacback'    
-
-#- task: Kubernetes@1
-#  displayName: remove backup job
-#  inputs:
-#    connectionType: 'Kubernetes Service Connection'
-#    kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
-#    namespace: 'pacman'
-#    command: 'delete'
-#    arguments: 'job pacback-backupaction-monitor'
+    arguments: 'job pacback-backupaction-monitor'
 
 
 - task: HelmDeploy@0
