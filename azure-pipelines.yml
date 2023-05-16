@@ -47,6 +47,8 @@ steps:
     namespace: 'pacman'
     command: 'delete'
     chartType: 'Name'    
+    # releaseName is ignored when the command is delete 
+    # https://github.com/microsoft/azure-pipelines-tasks/issues/18290
     releaseName: 'pacback'    
     arguments: pacback
 
