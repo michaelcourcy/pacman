@@ -48,7 +48,6 @@ steps:
     command: 'delete'
     arguments: 'job pacback-backupaction-monitor'
 
-
 - task: HelmDeploy@0
   displayName: deploy pacman
   inputs:
