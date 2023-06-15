@@ -36,6 +36,37 @@ spec:
           - pipefail
           - -c
           - | 
+            # ################
+            # Useful functions 
+            # ################
+            function getBackupActionState()
+            {
+                local backupaction=$1
+                local NAMESPACE=$2
+                local state="unknown"
+                # query the backupaction 
+                # we need to retry because sometime api temporary breaks 
+                RETRY_GET_BACKUP_ACTION=3   
+                while true 
+                do 
+                    if  ! state=$(kubectl -n $NAMESPACE get -o jsonpath='{.status.state}' backupaction/$backupaction)
+                    then 
+                        if [[ $RETRY_GET_BACKUP_ACTION -eq 0 ]]
+                        then
+                            # retry querying backupaction exhausted
+                            exit 1
+                        else
+                            # error querying backupaction retry $RETRY_GET_BACKUP_ACTION
+                            RETRY_GET_BACKUP_ACTION=$((RETRY_GET_BACKUP_ACTION-1))
+                            sleep 1
+                        fi
+                    else
+                        break
+                    fi
+                done
+                echo $state
+            } 
+             
             NAMESPACE={{ .Release.Namespace }}
             cat <<EOF | kubectl create -o jsonpath='{.metadata.name}' -f - | tee /tmp/backupaction
             kind: BackupAction
@@ -51,7 +82,7 @@ spec:
             backupaction=$(cat /tmp/backupaction)         
             while true
             do 
-              state=$(kubectl -n $NAMESPACE get -o jsonpath='{.status.state}' backupaction/$backupaction)
+              state=$(getBackupActionState $backupaction $NAMESPACE)
               if [[ "$state" == "Failed" ]]
               then 
                 echo "Error Backupaction $backupaction has failed"
@@ -66,3 +97,5 @@ spec:
               echo "Backupaction $backupaction in state $state, sleep 5 seconds"
               sleep 5 
             done
+
+            

@@ -3,16 +3,18 @@
 # Build and push the pacman image 
 # deploy with helm on your kubernetes cluster 
 
-# I you use with a serviceaccout connection 
+# If you use with a serviceaccout connection 
 # this service account must be granted the permission to create 
-# rolebinding inside the namespace 
-# Assuming that the name of the sa is devops create the following role and rolebinding
+# a temporary backupaction service account inside the namespace
+# a rolebinding between the temporary backupaction service account and the k10-basic clusterrole inside the namespace 
+# Assuming that the name of the serviceaccout connection is devops create the following role and rolebinding
 # in the namespace 
 # ---
 # apiVersion: rbac.authorization.k8s.io/v1
 # kind: Role
 # metadata:   
-#   name: role-for-devops#   
+#   name: role-for-devops
+#   namespace: <your namespace>     
 # rules:
 # - apiGroups:
 #   - '*'
@@ -28,7 +30,7 @@
 # kind: RoleBinding
 # metadata:
 #   name: rolebinding-for-devops
-#   namespace: pacman#   
+#   namespace: <your namespace>   
 # roleRef:
 #   apiGroup: rbac.authorization.k8s.io
 #   kind: Role
