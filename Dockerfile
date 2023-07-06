@@ -22,6 +22,5 @@ COPY . .
 # Expose port 8080
 EXPOSE 8080
 
-RUN chown -R 1000740000:0 "/.npm"
 # Run container
 CMD [ "npm", "start" ]
