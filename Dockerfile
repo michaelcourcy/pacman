@@ -22,5 +22,7 @@ COPY . .
 # Expose port 8080
 EXPOSE 8080
 
+# needed due to a bug in previous versions 
+RUN mkdir /.npm && chown -R 1000740000:0 /.npm
 # Run container
 CMD [ "npm", "start" ]
