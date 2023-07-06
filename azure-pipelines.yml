@@ -82,7 +82,7 @@ steps:
     chartType: 'FilePath'
     chartPath: 'charts/backupaction'
     releaseName: 'pacback'
-    overrideValues: 'kastenRelease=kasten-io'
+    overrideValues: 'kastenRelease=k10'
     arguments: --wait-for-jobs --timeout=120s
 
 - task: HelmDeploy@0
