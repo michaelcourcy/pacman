@@ -39,6 +39,14 @@
 # - kind: ServiceAccount
 #   name: devops
 #   namespace: <your namespace>
+#
+#
+# Create now a service account kubernetes service connection 
+# kubectl config view --minify -o jsonpath={.clusters[0].cluster.server}
+# https://api.se-lab-aro-prod-2.dev.azure.kasten.io:6443
+# kubectl get secret |grep devops-token | awk '{print $1}'
+# devops-token-hwwgx
+# kubectl get secret devops-token-hwwgx -o json
 
 
 trigger:
@@ -52,7 +60,7 @@ variables:
   registry: docker.io
   registry_user: michaelcourcy
   registry_repository: pacman
-  kubernetesServiceEndpoint: mcourcy-cluster
+  kubernetesServiceEndpoint: se-lab-2
   ingress: pacman.mcourcy.dev.azure.kasten.io
 
 steps:
@@ -100,5 +108,5 @@ steps:
     chartType: 'FilePath'
     chartPath: 'charts/pacman'
     releaseName: 'pacman'
-    overrideValues: 'ingress.create=true,ingress.class=nginx,ingress.host=$(ingress),pacman.image.registry=$(registry),pacman.image.repository=$(registry_user),pacman.image.image=$(registry_repository),pacman.image.tag=$(Build.BuildId)'
+    overrideValues: 'route.create=true,pacman.image.registry=$(registry),pacman.image.repository=$(registry_user),pacman.image.image=$(registry_repository),pacman.image.tag=$(Build.BuildId)'
 
