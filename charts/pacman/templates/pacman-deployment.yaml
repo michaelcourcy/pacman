@@ -22,8 +22,14 @@ spec:
         {{- include "pacman.selectorLabels" . | nindent 8 }}
         name: pacman
     spec:
+      volumes:
+      - name: npm-cache-volume
+        emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}
+          volumeMounts:
+           - mountPath: /.npm
+             name: npm-cache-volume
           # image: "ghcr.io/shuguet/pacman:master"
           image: {{ default .Chart.AppVersion .Values.pacman.image.tag | print .Values.pacman.image.registry "/" .Values.pacman.image.repository "/" .Values.pacman.image.image ":"  }}
           imagePullPolicy: {{ .Values.pacman.image.pullPolicy }}
